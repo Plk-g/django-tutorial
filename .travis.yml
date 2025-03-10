@@ -1,0 +1,26 @@
+language: python
+python:
+  - "3.11"
+
+install:
+  - pip install -r requirements.txt
+  - pip install black flake8 coverage coveralls
+
+script:
+  - black --check .
+  - flake8
+  - coverage run --source=. manage.py test
+
+after_success:
+  - coveralls
+
+deploy:
+  provider: elasticbeanstalk
+  region: "us-west-2"
+  app: "django-tutorial"
+  env: "django-env"
+  bucket_name: "elasticbeanstalk-us-west-2-495599732653"
+  on:
+    branch: main
+  access_key_id: $AWS_ACCESS_KEY_ID
+  secret_access_key: $AWS_SECRET_ACCESS_KEY
